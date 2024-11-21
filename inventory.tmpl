@@ -1,0 +1,12 @@
+[controller]
+%{ for ip in controller_node ~}
+${ip}
+%{ endfor ~}
+
+[compute]
+%{ for ip in compute_nodes ~}
+${ip}
+%{ endfor ~}
+
+[all:vars]
+ansible_user=${vm_admin_user}

@@ -1,0 +1,15 @@
+# Demo cluster and Docker registry installation play
+---
+  - name: Jenkins controller node setup
+    hosts: controller
+    become: true
+    roles:
+      - docker-registry
+  
+  - name: Compute nodes setup
+    hosts: compute
+    become: true
+    roles:
+      - docker
+      - java
+      - python3

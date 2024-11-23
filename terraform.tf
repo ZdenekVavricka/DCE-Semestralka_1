@@ -13,17 +13,9 @@ provider "opennebula" {
   password      = "${var.one_password}"
 }
 
-# resource "opennebula_image" "os-image" {
-#     name = "${var.vm_image_name}"
-#     datastore_id = "${var.vm_imagedatastore_id}"
-#     persistent = false
-#     path = "${var.vm_image_url}"
-#     permissions = "600"
-# }
-
-resource "opennebula_virtual_machine" "controller-node" {
-  name = "controller-node"
-  description = "Controller node VM"
+resource "opennebula_virtual_machine" "load-balancer-node" {
+  name = "load-balancer-node"
+  description = "Load-balancer node VM"
   cpu = 1
   vcpu = 1
   memory = 2048
@@ -40,7 +32,6 @@ resource "opennebula_virtual_machine" "controller-node" {
     boot = "disk0"
   }
   disk {
-#    image_id = opennebula_image.os-image.id
     image_id = 687
     target   = "vda"
     size     = 12000 # 12GB
@@ -62,36 +53,17 @@ resource "opennebula_virtual_machine" "controller-node" {
     private_key = "${file("/var/iac-dev-container-data/id_ecdsa")}"
   }
 
-  provisioner "file" {
-    source = "init-scripts/"
-    destination = "/tmp"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "export INIT_USER=${var.vm_admin_user}",
-      "export INIT_PUBKEY='${var.vm_ssh_pubkey}'",
-      "export INIT_LOG=${var.vm_node_init_log}",
-      "export INIT_HOSTNAME=${self.name}",
-      "touch ${var.vm_node_init_log}",
-      "sh /tmp/init-start.sh",
-      "sh /tmp/init-node.sh",
-      "sh /tmp/init-users.sh",
-      "sh /tmp/init-finish.sh"
-    ]
-  }
-
   tags = {
-    role = "controller"
+    role = "load-balancer"
   }
 
 }
 
-resource "opennebula_virtual_machine" "compute-node" {
+resource "opennebula_virtual_machine" "backend-node" {
   # This will create `vm_instance_count` instances:
-  count = var.compute_nodes_count
-  name = "compute-node-${count.index + 1}"
-  description = "Compute node VM #${count.index + 1}"
+  count = var.backend_nodes_count
+  name = "backend-node-${count.index + 1}"
+  description = "Backend node VM #${count.index + 1}"
   cpu = 1
   vcpu = 1
   memory = 2048
@@ -108,7 +80,6 @@ resource "opennebula_virtual_machine" "compute-node" {
     boot = "disk0"
   }
   disk {
-    # image_id = opennebula_image.os-image.id
     image_id = 687
     target   = "vda"
     size     = 12000 # 12GB
@@ -130,49 +101,28 @@ resource "opennebula_virtual_machine" "compute-node" {
     private_key = "${file("/var/iac-dev-container-data/id_ecdsa")}"
   }
 
-  provisioner "file" {
-    source = "init-scripts/"
-    destination = "/tmp"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "export INIT_USER=${var.vm_admin_user}",
-      "export INIT_PUBKEY='${var.vm_ssh_pubkey}'",
-      "export INIT_LOG=${var.vm_node_init_log}",
-      "export INIT_HOSTNAME=${self.name}",
-      "touch ${var.vm_node_init_log}",
-      "sh /tmp/init-start.sh",
-      "sh /tmp/init-node.sh",
-      "sh /tmp/init-users.sh",
-      "sh /tmp/init-finish.sh"
-    ]
-  }
-
   tags = {
-    role = "compute"
+    role = "backend"
   }
 
 }
 
 #-------OUTPUTS ------------
 
-output "controller_node" {
-  value = "${opennebula_virtual_machine.controller-node.*.ip}"
+output "load-balancer-node" {
+  value = "${opennebula_virtual_machine.load-balancer-node.*.ip}"
 }
 
-output "compute_nodes" {
-  value = "${opennebula_virtual_machine.compute-node.*.ip}"
+output "backend-nodes" {
+  value = "${opennebula_virtual_machine.backend-node.*.ip}"
 }
 
-resource "local_file" "hosts_cfg" {
-  content = templatefile("inventory.tmpl",
+resource "local_file" "nginx_cfg" {
+  content = templatefile("./external/dce-load-balancer/nginx/nginx.conf.tmpl",
     {
-      vm_admin_user = var.vm_admin_user,
-      controller_node = opennebula_virtual_machine.controller-node.*.ip,
-      compute_nodes = opennebula_virtual_machine.compute-node.*.ip
+      backend-nodes = opennebula_virtual_machine.backend-node.*.ip,
     })
-  filename = "./dynamic_inventories/cluster"
+  filename = "./ansible/roles/load-balancer/files/nginx.conf"
 }
 
 #

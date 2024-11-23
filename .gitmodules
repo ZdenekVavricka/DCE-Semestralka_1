@@ -1,0 +1,6 @@
+[submodule "external/dce-semestralka_1-load_balancer"]
+	path = external/dce-semestralka_1-load_balancer
+	url = https://github.com/ZdenekVavricka/dce-semestralka_1-load_balancer.git
+[submodule "external/dce-semestralka_1-backend"]
+	path = external/dce-semestralka_1-backend
+	url = https://github.com/ZdenekVavricka/dce-semestralka_1-backend.git

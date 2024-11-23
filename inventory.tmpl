@@ -1,10 +1,10 @@
-[controller]
-%{ for ip in controller_node ~}
+[load-balancer]
+%{ for ip in load-balancer-node ~}
 ${ip}
 %{ endfor ~}
 
-[compute]
-%{ for ip in compute_nodes ~}
+[backend]
+%{ for ip in backend-nodes ~}
 ${ip}
 %{ endfor ~}
 

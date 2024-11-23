@@ -1,0 +1,10 @@
+- name: Install Python Backend in Docker container
+  docker_container:
+    name: backend
+    hostname: "{{ inventory_hostname }}"
+    image: ghcr.io/zdenekvavricka/dce-semestralka_1-backend:latest
+    state: started
+    restart_policy: unless-stopped
+    pull: yes
+    ports:
+    - "5000:5000"

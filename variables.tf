@@ -34,8 +34,8 @@ variable "vm_image_name" {
 variable "vm_image_url"  {
     description = "VM OS image URL"
 }
-variable "compute_nodes_count" {
-    description = "Number of compute nodes"
+variable "backend_nodes_count" {
+    description = "Number of backend nodes"
     type = number
     default = 2
 }

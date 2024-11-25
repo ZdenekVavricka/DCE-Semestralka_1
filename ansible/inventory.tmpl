@@ -1,5 +1,5 @@
 [load-balancer]
-%{ for ip in load-balancer-node ~}
+%{ for ip in load-balancer ~}
 ${ip}
 %{ endfor ~}
 

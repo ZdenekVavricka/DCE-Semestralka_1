@@ -12,7 +12,7 @@
 - name: Install custom NGINX load balancer in Docker container
   docker_container:
     name: load-balancer
-    image: ghcr.io/zdenekvavricka/dce-semestralka_1-load_balancer:latest
+    image: ghcr.io/zdenekvavricka/dce-semestralka_1-load_balancer:v1.0.1
     volumes:
       - /etc/nginx/nginx.conf:/etc/nginx/nginx.conf
     state: started

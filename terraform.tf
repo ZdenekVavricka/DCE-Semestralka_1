@@ -117,8 +117,18 @@ output "backend-nodes" {
   value = "${opennebula_virtual_machine.backend-node.*.ip}"
 }
 
+resource "local_file" "hosts_cfg" {
+  content = templatefile("./ansible/inventory.tmpl",
+    {
+      vm_admin_user = var.vm_admin_user,
+      load-balancer = opennebula_virtual_machine.load-balancer-node.*.ip,
+      backend-nodes = opennebula_virtual_machine.backend-node.*.ip
+    })
+  filename = "./dynamic_inventories/cluster"
+}
+
 resource "local_file" "nginx_cfg" {
-  content = templatefile("./external/dce-load-balancer/nginx/nginx.conf.tmpl",
+  content = templatefile("./external/dce-semestralka_1-load_balancer/nginx/nginx.conf.tmpl",
     {
       backend-nodes = opennebula_virtual_machine.backend-node.*.ip,
     })

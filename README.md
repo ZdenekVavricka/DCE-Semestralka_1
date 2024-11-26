@@ -7,7 +7,8 @@ The resulting cluster returns a simple web page containing the IP address of the
 ## Usage
 1. Install Docker, Terraform and Ansible.
 2. Clone the git repository: `git clone --recursive https://github.com/ZdenekVavricka/dce-semestralka_1.git` into your desire location.
-3. In `terraform.tfvars`, change the username(`one_username`) and login token (`one_password`) to valid values
+3. Build and Open in Container: In Visual Studio Code press `F1` and write `Dev Containers: Rebuild and Reopen in Container`
+4. In `terraform.tfvars`, change the username(`one_username`) and login token (`one_password`) to valid values
 
 <p align="left">
   <img src="images/terraform-tfvars-1.png" alt="Change username and login token">
@@ -20,15 +21,15 @@ The resulting cluster returns a simple web page containing the IP address of the
   <img src="images/terrafrom-apply.png" alt="terraform-apply">
 </p>
   
-6. Run the Ansible playbook: `ansible-playbook -i dynamic_inventories/cluster ansible/main-cluster.yml`
-7. Connect to `http://<load-balancer-ip>`
+7. Run the Ansible playbook: `ansible-playbook -i dynamic_inventories/cluster ansible/main-cluster.yml`
+8. Connect to `http://<load-balancer-ip>`
 
 <p align="left">
   <img src="images/backend.png" alt="Backend-server">
 </p>
 
 **Note**: 
-- *Number of backend servers can be changed using the backend_nodes_count variable in terraform.tfvars*
+- *Number of backend servers can be changed using the* `backend_nodes_count` *variable in* `terraform.tfvars`
   
 <p align="left">
   <img src="images/terraform-tfvars-2.png" alt="Edit number of backend servers">

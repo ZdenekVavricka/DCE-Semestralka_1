@@ -1,0 +1,13 @@
+# Demo cluster and Docker registry installation play
+---
+  - name: Load balancer node setup
+    hosts: load-balancer
+    become: true
+    roles:
+      - load-balancer
+  
+  - name: Backend nodes setup
+    hosts: backend
+    become: true
+    roles:
+      - backend

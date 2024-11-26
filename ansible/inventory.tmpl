@@ -1,0 +1,12 @@
+[load-balancer]
+%{ for ip in load-balancer ~}
+${ip}
+%{ endfor ~}
+
+[backend]
+%{ for ip in backend-nodes ~}
+${ip}
+%{ endfor ~}
+
+[all:vars]
+ansible_user=${vm_admin_user}

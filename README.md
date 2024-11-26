@@ -6,7 +6,7 @@ The resulting cluster returns a simple web page containing the IP address of the
 
 ## Usage
 1. Install Docker, Terraform and Ansible.
-2. Clone the git repository: `clone --recursive https://github.com/ZdenekVavricka/dce-semestralka_1.git` into your desire location.
+2. Clone the git repository: `git clone --recursive https://github.com/ZdenekVavricka/dce-semestralka_1.git` into your desire location.
 3. In `terraform.tfvars`, change the username(`one_username`) and login token (`one_password`) to valid values
 
 <p align="left">
